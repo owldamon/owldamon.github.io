@@ -328,39 +328,19 @@
       
         
           
-            <h2 id="win10系统下安装mySQL"><a href="#win10系统下安装mySQL" class="headerlink" title="win10系统下安装mySQL"></a>win10系统下安装mySQL</h2><p>想着学学后台基础，就跟着廖雪峰老师的教程<a href="http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000" target="_blank" rel="external">JavaScript教程</a>做了下，到了数据库这一步发现有几个坑，就整理下方便下次安装。</p>
-<ol>
-<li><p>要安装mysql，首先我们得去mysql官网<a href="https://dev.mysql.com/downloads/mysql/" target="_blank" rel="external">下载</a>我们需要的资源，这是今天我们要学习配置的版本。</p>
-</li>
-<li><p>我下载的时候只有5.7版本的压缩包版，所以大家可以根据自己的实际情况选择下载。</p>
-</li>
-<li><p>下载完成后，新建一个文件夹 <em>MySQL-5.7</em> ，然后解压到里面。</p>
-</li>
-<li><p>解压完成后，在 <em>MySQL-5.7</em> 里面新建一个配置文件 <em>my.ini</em>，用记事本打开，输入mysql的基本配置：  </p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">[mysql]  </div><div class="line">; 设置mysql客户端默认字符集  </div><div class="line">default-character-set=utf8  </div><div class="line">[mysqld]  </div><div class="line">;设置3306端口  </div><div class="line">port = 3306   </div><div class="line">; 设置mysql的安装目录  </div><div class="line">basedir=E:\mysql-5.7  </div><div class="line">; 设置mysql数据库的数据的存放目录  </div><div class="line">datadir=E:\mysql-5.7\data  </div><div class="line">; 允许最大连接数  </div><div class="line">max_connections=200  </div><div class="line">; 服务端使用的字符集默认为8比特编码的latin1字符集  </div><div class="line">character-set-server=utf8  </div><div class="line">; 创建新表时将使用的默认存储引擎  </div><div class="line">default-storage-engine=INNODB</div></pre></td></tr></table></figure>
-</li>
-<li><p>用管理员的身份打开CMD窗口后，将目录切换到你解压的文件 <em>bin</em> 目录下。再输入 <code>mysqld init</code>。  </p>
-<blockquote>
-<p>1）win10系统下右键点击开始菜单，选择Windows PowerShell（管理员）即可；<br> 2）注意输入的是 <code>mysqld</code> ,而不是 <code>mysql</code>；<br> 3）注意把解压后的 <em>bin</em> 路径配置到系统环境 <em>path</em> 中，不然下面的代码不会生效。</p>
-</blockquote>
-</li>
-<li><p>接下来我们用 <code>mysqld  --initialize</code> 先初始化data目录。要不然mysql5.7的文件夹下面不会出现data文件夹。  </p>
-</li>
-<li><p>启动mysql服务 <code>net start mysql</code><br>如果启动报错系统错误2，找不到指定文件，则修改注册表<br>HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\MySQL的”ImagePath”键值，改为  “你的路径/bin/mysqld” MySQL<br>再次启动mysql服务 <code>net start mysql</code><br>关闭mysql服务 <code>net stop mysql</code>  </p>
-<blockquote>
-<p>也可以 <code>Win + R</code> 键，输入 <code>services.msc</code> 手动开启或关闭mysql服务</p>
-</blockquote>
-</li>
-<li><p>修改登录密码<br>在安装mysql5.7版本时，经常会遇到mysql -u root -p直接回车登陆不上的情况，原因在于5.7版本在安装时自动给了一个随机密码，坑爹的是在init步骤的时候不像linux系统会给出命令行提示;<br>首先，关闭mysql服务，在提示命令管理工具（<strong>管理员权限</strong>）输入如下命令，进入安全模式：<code>mysqld --defaults-file=&quot;你的路径\my.ini&quot; --console --skip-grant-tables</code>，这里的路径需要根据你安装的实际路径修改。好的，这个窗口我们让它就这么运行，然后重新打开一个命令提示窗口，记得一定是管理员权限。<br>接着我们继续输入用户名和密码登陆。别急，这只是第一步。接下来我们还是要修改root的默认密码。<br>1.进入mysql数据库：  </p>
- <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">mysql&gt; use mysql;  </div><div class="line">Database changed    </div><div class="line">```  </div><div class="line"></div><div class="line">2.给root用户设置新密码</div></pre></td></tr></table></figure>
-<p> mysql&gt; update user set authentication_string=password(“新密码”) where user=”root”;<br> Query OK,1 rows affected(0.01 sec)Rows matched:1 Changed:1Warnings: 0</p>
- <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">3.刷新数据库 （一定要记得刷新）</div></pre></td></tr></table></figure>
-<p> mysql&gt;flush privileges;<br> QueryOK, 0 rows affected (0.00 sec)<br> <code>``
- 4.退出mysql：</code>mysql&gt; quit<code>下次输入</code>mysql -uroot -p`  就可以用新密码登录了。</p>
-</li>
-</ol>
+          win10系统下安装mySQL想着学学后台基础，就跟着廖雪峰老师的教程JavaScript教程做了下，到了数据库这一步发现有几个坑，就整理下方便下次安装。
 
-          
+要安装mysql，首先我们得去mysql官网下载我们需要的资源，这是今天我们要学习配置的版本。
+
+我下载的时候只有5.7版本的压缩包版，所以大
+          ...
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2017/05/24/isntall mysql/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>
